@@ -22,7 +22,7 @@ typedef struct piglet_ {
   unsigned firstTime;
 } piglet;
 
-piglet* global; // XXX - hack to work around vc_dispmanx_vsync_callback FAIL
+piglet* global = NULL; // XXX - hack to work around vc_dispmanx_vsync_callback FAIL
 
 void vsync_happened(void* arg) {
   piglet* p = global; // = arg; // XXX - should work; doesn't.
@@ -48,6 +48,11 @@ void vsync_happened(void* arg) {
 
 piglet* piglet_create(void (*setup)(void), void (*draw)(void)) {
 
+  if (global != NULL) {
+    printf("ERROR: piglet already running. call piglet_create only once, ever\n");
+    return global;
+  }
+
   bcm_host_init();
 
   uint32_t width, height;
@@ -71,6 +76,11 @@ piglet* piglet_create_detail(
   unsigned height,
   unsigned fullscreen) {
 
+  if (global != NULL) {
+    printf("ERROR: piglet already running. call piglet_create only once, ever\n");
+    return global;
+  }
+
   piglet* p = malloc(sizeof(piglet));
 
   memset(p, 0, sizeof(piglet));
@@ -90,7 +100,7 @@ piglet* piglet_create_detail(
     exit(1);
   }
 
-  printf("displayWidth:%u, displayHeight:%u\n", p->displayWidth, p->displayHeight);
+  //printf("displayWidth:%u, displayHeight:%u\n", p->displayWidth, p->displayHeight);
   p->fullscreenRect = (VC_RECT_T){0, 0, p->displayWidth, p->displayHeight};
 
   if ((p->dispman_display = vc_dispmanx_display_open(0 /* LCD */)) <= 0) {

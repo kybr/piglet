@@ -1,10 +1,12 @@
 .SUFFIXES:
 .PHONY: _
 
+_: main test
+
 main: main.o piglet.o
 	cc -o main -Wl,--whole-archive main.o piglet.o -L/opt/vc/lib/ -lGLESv2 -lEGL -lbcm_host -lvcos -lvchiq_arm -lpthread -lrt -L/opt/vc/src/hello_pi/libs/vgfont -ldl -lm -Wl,--no-whole-archive -rdynamic
 
-main: test.o piglet.o
+test: test.o piglet.o
 	cc -o test -Wl,--whole-archive test.o piglet.o -L/opt/vc/lib/ -lGLESv2 -lEGL -lbcm_host -lvcos -lvchiq_arm -lpthread -lrt -L/opt/vc/src/hello_pi/libs/vgfont -ldl -lm -Wl,--no-whole-archive -rdynamic
 
 piglet.o: piglet.c piglet.h

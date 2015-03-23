@@ -2,6 +2,8 @@
 #include <GLES2/gl2.h>
 #include <stdio.h>
 
+piglet* p;
+
 void setup() {
   printf("setup()\n");
 }
@@ -24,11 +26,13 @@ void draw() {
 }
 
 int main(int argc, char* argv[]) {
-  piglet* p = piglet_create_detail(setup, draw, 1000, 800, 100, 100, 0);
+  p = piglet_create_detail(setup, draw, 1000, 800, 100, 100, 0);
   getchar();
   piglet_set_rect(p, 200, 200, 300, 300);
   getchar();
   piglet_fullscreen(p, 1);
+  getchar();
+  p = piglet_create(setup, draw);
   getchar();
   piglet_fullscreen(p, 0);
   getchar();
