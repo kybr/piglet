@@ -4,6 +4,8 @@
 main
 test
 
+*.pyc
+
 # Object files
 *.o
 *.ko
