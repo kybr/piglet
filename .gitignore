@@ -1,6 +1,9 @@
 # vim
 *~
 
+main
+test
+
 # Object files
 *.o
 *.ko
