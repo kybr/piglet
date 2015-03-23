@@ -22,13 +22,21 @@ typedef struct piglet_ {
   unsigned firstTime;
 } piglet;
 
-piglet* global = NULL; // XXX - hack to work around vc_dispmanx_vsync_callback FAIL
+piglet* global; // XXX - hack to work around vc_dispmanx_vsync_callback arg problem
 
-void vsync_happened(void* arg) {
-  piglet* p = global; // = arg; // XXX - should work; doesn't.
+void vsync_happened(void* arg /* XXX this is always null */) {
 
-  if (p == 0)
+  if (arg != NULL) {
+    printf("FIXME: vc_dispmanx_vsync_callback arg might be working!\n");
+    exit(1);
+  }
+
+  piglet* p = global; // XXX - hack to work around vc_dispmanx_vsync_callback arg problem
+
+  if (p == 0) {
+    printf("ERROR: piglet was null\n");
     return;
+  }
 
   if (eglMakeCurrent(p->display, p->surface, p->surface, p->context) != EGL_TRUE) {
     printf("FAIL: eglMakeCurrent\n");
@@ -61,8 +69,7 @@ piglet* piglet_create(void (*setup)(void), void (*draw)(void)) {
     exit(1);
   }
 
-  // XXX need this?
-  //bcm_host_deinit();
+  //bcm_host_deinit(); // XXX need this?
 
   return piglet_create_detail(setup, draw, width - 200, 0, 200, 200, 0);
 }
@@ -179,7 +186,11 @@ piglet* piglet_create_detail(
 
   // register callback on vsync
   //
-  if (vc_dispmanx_vsync_callback(p->dispman_display, (DISPMANX_CALLBACK_FUNC_T)vsync_happened, p) != 0) {
+  if (vc_dispmanx_vsync_callback(
+        p->dispman_display,
+        (DISPMANX_CALLBACK_FUNC_T)vsync_happened,
+        p /* XXX pass this piglet as the callback arguments - seems broked */) != 0)
+  {
     printf("FAIL: vc_dispmanx_vsync_callback\n");
     exit(1);
   }
