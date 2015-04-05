@@ -12,7 +12,8 @@ void draw() {
   static float f = 0;
   static unsigned n = 0;
 
-  glClearColor(f, 0.0, 0.0, 0.4); // use alpha to see see other contexts
+  glClearColor(f, 0.0, 0.0, 0.5); // use alpha to see see other contexts
+  //glClearColor(f, 0.0, 0.0, 1.0);
   glClear(GL_COLOR_BUFFER_BIT);
   glFlush();
 

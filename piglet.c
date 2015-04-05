@@ -22,16 +22,11 @@ typedef struct piglet_ {
   unsigned firstTime;
 } piglet;
 
-piglet* global; // XXX - hack to work around vc_dispmanx_vsync_callback arg problem
+piglet* singleton = NULL; // only allow a single window per process for now
 
-void vsync_happened(void* arg /* XXX this is always null */) {
+void vsync_happened(DISPMANX_UPDATE_HANDLE_T ignore, void * arg) {
 
-  if (arg != NULL) {
-    printf("FIXME: vc_dispmanx_vsync_callback arg might be working!\n");
-    exit(1);
-  }
-
-  piglet* p = global; // XXX - hack to work around vc_dispmanx_vsync_callback arg problem
+  piglet* p = (piglet*)arg;
 
   if (p == 0) {
     printf("ERROR: piglet was null\n");
@@ -56,9 +51,9 @@ void vsync_happened(void* arg /* XXX this is always null */) {
 
 piglet* piglet_create(void (*setup)(void), void (*draw)(void)) {
 
-  if (global != NULL) {
+  if (singleton != NULL) {
     printf("ERROR: piglet already running. call piglet_create only once, ever\n");
-    return global;
+    return singleton;
   }
 
   bcm_host_init();
@@ -83,12 +78,13 @@ piglet* piglet_create_detail(
   unsigned height,
   unsigned fullscreen) {
 
-  if (global != NULL) {
+  if (singleton != NULL) {
     printf("ERROR: piglet already running. call piglet_create only once, ever\n");
-    return global;
+    return singleton;
   }
 
   piglet* p = malloc(sizeof(piglet));
+  singleton = p;
 
   memset(p, 0, sizeof(piglet));
 
@@ -195,7 +191,6 @@ piglet* piglet_create_detail(
     exit(1);
   }
 
-  global = p;
   return p;
 }
 
