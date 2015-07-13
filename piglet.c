@@ -56,6 +56,7 @@ piglet* piglet_create(void (*setup)(void), void (*draw)(void)) {
     return singleton;
   }
 
+  bcm_host_deinit(); // XXX need this?
   bcm_host_init();
 
   uint32_t width, height;
@@ -96,6 +97,7 @@ piglet* piglet_create_detail(
   p->draw = draw;
   p->firstTime = 1;
 
+  bcm_host_deinit(); // XXX need this?
   bcm_host_init();
 
   if (graphics_get_display_size(0, &p->displayWidth, &p->displayHeight) < 0) {

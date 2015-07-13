@@ -3,6 +3,7 @@
 
 main
 test
+flash
 
 *.pyc
 
