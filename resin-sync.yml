@@ -1,0 +1,4 @@
+before: 'make'
+ignore:
+    - .git
+progress: true
